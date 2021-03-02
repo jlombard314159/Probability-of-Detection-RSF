@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Animal locations (cell_IDs)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for locations {MDCv1}"><tr><td>locations {MDCv1}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Animal locations (cell_IDs)
+</h2>
+
+<h3>Usage</h3>
+
+<pre>data("locations")</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 444 observations on the following 2 variables.
+</p>
+
+<dl>
+<dt><code>unit.id</code></dt><dd><p>a numeric vector of cell_IDs</p>
+</dd>
+<dt><code>fix</code></dt><dd><p>a numeric vector of fix attempt ID</p>
+</dd>
+</dl>
+
+
+
+<h3>Details</h3>
+
+<p>cell_IDs should represent every fix attempt, so NA's exist when the animal
+wasn't located. Cell_IDs should be in sequential order. The 'fix' column is not necessary for analysis, but demonstrates that unsuccessful fix attempts are represented in the data.
+</p>
+
+
+<h3>Source</h3>
+
+<p>Nielson, R. M., B. F. J. Manly, L. L. McDonald, H. Sawyer, and T. L. McDonald. 2009. Estimating habitat selection when GPS fix success is less than 1. Ecology 90:2956-2962.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+str(locations)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>MDCv1</em> version 1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Modified discrete choice model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for MDCv1-package {MDCv1}"><tr><td>MDCv1-package {MDCv1}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Modified discrete choice model
+</h2>
+
+<h3>Description</h3>
+
+<p>Fits the Modified Discrete Choice (MDC) model
+to estimate resource selection when GPS fix success &lt; 1.
+</p>
+
+
+<h3>Details</h3>
+
+<p>When GPS fix success is &lt;1 and related to habitat charachteristics
+(e.g., canopy cover), typical estimating RSFs can result of biased estimates   of resource selection. The modified discrete choice (MDC) model accounts for
+missing locations. 
+</p>
+<p>When missing locations are not an issue, the standard discrete choice (DC)
+is used to model resource selection.
+</p>
+<p>One option included in both modeling approaches is to consider distance
+from previous location when estimating resource selection. By including
+'distance' from previous location in the model, we are considering that 
+the animal does not move too far from the previous location when making
+its next selection. Considering animal movement when estimating resource
+selection is the basis for step-selection functions. 
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Ryan Nielson &lt;ryan@eagleenvironmental.net&gt; ,
+John Lombardi, and 
+Trent McDonald 
+</p>
+
+
+<h3>References</h3>
+
+<p>Nielson, R. M., B. F. J. Manly, L. L. McDonald, H. Sawyer, and T. L. McDonald. 2009. Estimating habitat selection when GPS fix success is less than 1. Ecology 90:2956-2962.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="mdc.html">mdc</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>MDCv1</em> version 1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

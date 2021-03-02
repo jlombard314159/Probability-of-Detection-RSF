@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Fits the modified discrete choice model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mdc {MDCv1}"><tr><td>mdc {MDCv1}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Fits the modified discrete choice model
+</h2>
+
+<h3>Description</h3>
+
+<p>Just what the title says
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mdc(habitatDF, CellID, rsfCovars = NULL, probDetCovars = NULL, distColumns = NULL, maxLagArg = 3, SEs = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>habitatDF</code></td>
+<td>
+
+<p>data.frame of habitat units (cells) across the landscape, with X and Y coordinates, CellID, and habitat covariates.
+</p>
+</td></tr>
+<tr valign="top"><td><code>CellID</code></td>
+<td>
+
+<p>Vector of CellIDs for animal relocations, in sequential order, with 
+NA values when the animal was missing.
+</p>
+</td></tr>
+<tr valign="top"><td><code>rsfCovars</code></td>
+<td>
+
+<p>Character string of covariate names to be used in the resource selection function piece of the MDC. Include 'distance' if distance from previous
+location should be included in the RSF.
+</p>
+</td></tr>
+<tr valign="top"><td><code>probDetCovars</code></td>
+<td>
+
+<p>Character string of covariate names to be used in the probability of detection piece of the MDC. Set to NULL for fitting a standard discrete choice model.
+</p>
+</td></tr>
+<tr valign="top"><td><code>distColumns</code></td>
+<td>
+
+<p>Names of X and Y coordinates in habitatDF, or NULL.
+</p>
+</td></tr>
+<tr valign="top"><td><code>maxLagArg</code></td>
+<td>
+
+<p>Do Not Disturb
+</p>
+</td></tr>
+<tr valign="top"><td><code>SEs</code></td>
+<td>
+
+<p>Do you want SEs to be estimated using the Hessian? Must be TRUE or FALSE. Saying FALSE saves time (about 30 percent reduction), but you don't get SEs! This is really intended for speedy testing.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Results of model estimation.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="MDCv1-package.html">MDCv1</a></code>
+<code><a href="habitat.html">habitat</a></code>
+<code><a href="locations.html">locations</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+habitat &lt;- MDCv1::habitat
+locations &lt;- MDCv1::locations
+
+# Fix success rate
+mean(!is.na(locations$unit.id))
+
+# Standard discrete choice model
+mdc(habitatDF = habitat, CellID = locations$unit.id, 
+    rsfCovars = c("distance", "prcnt.sage", "elevation"), 
+    probDetCovars = NULL, distColumns = c("utmX","utmY"), 
+    maxLagArg = 3, SEs = TRUE)
+
+# Modified discrete choice model
+mdc(habitatDF = habitat, CellID = locations$unit.id, 
+    rsfCovars = c("distance", "prcnt.sage", "elevation"), 
+    probDetCovars = "prcnt.sage", distColumns = c("utmX","utmY"), 
+    maxLagArg = 3, SEs = TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>MDCv1</em> version 1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

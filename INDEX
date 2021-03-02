@@ -1,0 +1,4 @@
+MDCv1-package           Modified discrete choice model
+habitat                 Habitat covariates
+locations               Animal locations (cell_IDs)
+mdc                     Fits the modified discrete choice model

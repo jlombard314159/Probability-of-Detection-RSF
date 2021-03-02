@@ -1,0 +1,15 @@
+Package: MDCv1
+Type: Package
+Title: Fits modified discrete choice model
+Version: 1.0
+Date: 2020-04-11
+Author: Ryan Nielson, John Lombardi, and Trent McDonald
+Maintainer: Ryan Nielson <ryan@eagleenvironmental.net>
+Description: Fits the Modified Discrete Choice (MDC) model
+    to estimate resource selection when GPS fix success < 1. 
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.0)
+LinkingTo: Rcpp, RcppArmadillo, RcppEigen
+LazyData: true
+Built: R 3.5.3; x86_64-w64-mingw32; 2020-04-13 17:43:47 UTC; windows
+Archs: i386, x64
