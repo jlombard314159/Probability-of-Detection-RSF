@@ -1,0 +1,97 @@
+---
+title: "MDC"
+author: "John Lombardi and Ryan Nielson"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# MDC Package
+
+The Movement Discrete Choice (MDC) model is a method that accounts for habitat-induced data loss in a resource selection model. The discrete choice model combines a resource selection model and a model for probability of detection. A couple of recommendations: use 64-bit OS. The package will work with 32-bit. For large data sets, e.g. study areas with $>3,000$ locations a computer with lots of RAM is necessary due to the required matrix algebra.
+
+
+##Methods
+
+The probability of a collared animal moving from site $j$ to site $k$ is: 
+
+$$ (1) w_{jk} = \frac{exp(\beta_{1}x_{1jk} + \beta_{2}x_{2jk} + ... + \beta_{p}x_{pjk} )}{\sum\limits_{l=1}^N exp(\beta_{1}x_{1jl} + \beta_{2}x_{2jl} + ... + \beta_{p}x_{pjl} )} $$ 
+
+The probability of detecting the animal in site $k$ is defined as:
+
+$$ (2) p_{k} = \frac{exp(\theta_{0} + \theta_{1}y_{1k} + \theta_{2}y_{2k} + ... + \theta_{q}y_{qk})}{1 + exp(\theta_{0} + \theta_{1}y_{1k} + \theta_{2}y_{2k} + ... + \theta_{q}y_{qk})} $$
+
+where $\theta_{1}, \theta_{2}, ..., \theta_{q}$ are coefficients to be estimated and $y_{1k}, ..., y_{qk}$ are values of q covariates measued on site k that influence GPS fix success.
+
+###Likelihood
+
+The likelihood calculation for one collared animal at site $j$ during event $i$ and detected again at site $k$ during event $i+1$ the likelihood is defined as:
+
+$$(3) L_{i + 1}(j,k) = w_{jk}p_{k} $$
+
+We can write the definition of the likelihood in $(3)$ in matrix notation as:
+
+$$ (4) L_{i + 1}(j,k) =  \mathbf{D_{jk}} $$
+
+where $\mathbf{D_{jk}}$ is a $N X N$ matrix where $\mathbf{D_{jk}} = w_{jk}p_{k}$. To account for a string of $m-1$ missing locations the likelihood becomes:
+
+$$ (5) L_{i+m}(j,k) = \mathbf{B_{j}B^{m-2}D_{k}} $$
+where $\mathbf{B}$ is a $N X N$ matrix where $\mathbf{B_{jk}} = w_{jk}(1-p_{k})$. In $(5)$ $\mathbf{B_{j}}$ is the jth row of $\mathbf{B}$, and $\mathbf{B^{m-2}}$ denotes $B$ multiplied by itself $m-2$ times. $\mathbf{D_{k}}$ is the *k*th column of $\mathbf{D}$.
+
+##Functions
+
+**MDC** has one main function and a wrapper function to enable more general data inputs. 
+
+###MDCWrapper
+
+MDCWrapper has 7 total arguments, 4 are required. `habitatDF`, `locationsDF`, and `nCells` are required. See `?MDCWrapper` for detailed information.
+
+###MDC
+
+MDC is the main function although not necessary to run. It is recommended to use the MDCWrapper function. 
+
+##Example
+
+```{r}
+
+#habitatDF is a dataframe that contains environmental covariates for the RSF
+
+habitatDF <- data.frame(UTMX = c(203453,201353,205122,230131,205315),
+                        UTMY = c(4534122,4134124,4342313,4314431,423434),
+                        UnitID = c(1,2,3,4,5),
+                        Elevation = c(2.12,2.34,2.24,2.24,2.56))
+
+#Total number of cells in the study area
+nCells = max(habitatDF$UnitID)
+
+#locationsDF is a dataframe of fix attempts for an individual collared animal
+
+locationsDF <- data.frame(UnitID = c(3,4,2,4,NA,NA,1),
+                          FixAttempt = c(1,2,3,4,5,6,7))
+
+##For inputs, we only need the record of fix/not fixed or the UnitID column
+# test<- MDCWrapper(habitatDF = habitatDF,
+#                        locationsDF = locationsDF$UnitID,
+#                        nCells = nCells,
+#                        rsfCovars = c("Elevation"),
+#                        distColumns  = c("UTMX","UTMY"))
+
+
+```
+
+In the above example the distColumns was added as a covariate in the RSF. A distance matrix is calculated in the wrapper, so it is only necessary to provide the columns, in correct order, to the `distColumns` argument. The RSF will be ran with Elevation as a covariate. The probability of detection will be an intercept-only model.
+
+The function argument `maxLagArg` is necessary when there are multiple failed fix attempts for a collared animal. If an animal is not recorded, say, 20 times in a row the matrix algebra required becomes impossible for most computers. The `maxLagArg` is set to $3$ on default, in other words, if there is a string of missing locations $>3$ the calculation will assume there were only $3$ missing locations. Depending on the size of the dataset and the number of fixes `maxLagArg` can be larger, but it is recommended to use $3$. 
+
+## Reference 
+
+See **Nielson, R. M., B. F. J. Manly, L. L. McDonald, H. Sawyer, and T. L. McDonald. 2009. Estimating Habitat Selection When GPS Fix Success Is Less Than 100%. Ecology 90(10): 2956-2962.** for full details.
+
+
+
+
+
+
