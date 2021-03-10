@@ -8,3 +8,9 @@ testFoo <- function(x){
 y <- c(1,2,3)
 
 testFoo(y)
+
+function(list){
+  
+  return(lapply(list,testFoo))
+  
+}
