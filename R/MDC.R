@@ -1,10 +1,10 @@
-#' @name MDC
+#' @name pdrsf
 #'
 #' @title Fits the discrete choise RSF
 #'
-#' @description This is a function to fit the modified
-#' discrete choice RSF to animal locations
-#' when there is <100% fix success, assuming fix success is a function of habitat.
+#' @description This is a function to fit the probabiliy of detection resource selection
+#' function (PDRSF) to animal locations
+#' when there is <100% fix success, assuming fix success is related to habitat characteristics.
 #'
 #' @param selection model formula for rsf parameters (the relative probability of
 #' selection parameters).
@@ -32,14 +32,14 @@
 #'
 #' @param LogCovar Character vector for the covariates for logistic regression
 #'
-#' @return This function returns a MDC fit.
+#' @return This function returns a PDRSF fit.
 #'
 #' @author John Lombardi (email: \code{jlombardi@west-inc.com})
 #'
-#' @export MDC
+#' @export PDRSF ? not sure if this is correct. I think right now it is of class 'rsf'
 
 
-MDC <- function(selection, p, locations, ncells,maxLagArg,RSFCovar,
+pdrsf <- function(selection, p, locations, ncells, maxLagArg, RSFCovar,
                 LogCovar){
 
   # -------- Main code for siteocc.fn ------
@@ -50,30 +50,24 @@ MDC <- function(selection, p, locations, ncells,maxLagArg,RSFCovar,
   if(!is.numeric(locations)) stop("Cell ID #s are not numeric")
 
   orig.call <- match.call()
-  # browser()
-  # memory.limit(6.291e+6)
   rsf.mod.mat <- getModMatrix(selection, ncells)
 
   #Define for nlminb - these will never be null
   X.rsf <- rsf.mod.mat$X
   k.rsf <- rsf.mod.mat$n.covars
-  # browser()
-  #May have to check tosee if it is not null
-if(is.null(p))
-  {
+if(is.null(p)) {
     #Do maximizaiton here
     strt.vals <- rep(0, k.rsf)
 
     #   Do maximization
-    out <- nlminb(start = strt.vals, objective = likelihoodMDCRSF,
-                  X1=X.rsf,
-                  locations=locations, k1=k.rsf)
-
-
+    out <- nlminb(start = strt.vals, objective = issfLogLike,
+                  X1 = X.rsf,
+                  locations = locations, 
+                  k1 = k.rsf)
 
     # Function call
-    hessian = F.2nd.deriv(out$par, likelihoodMDCRSF, X1=X.rsf,
-                          locations=locations, k1=k.rsf)
+    hessian = F.2nd.deriv(out$par, issfLogLike, X1 = X.rsf,
+                          locations = locations, k1 = k.rsf)
     SEs = sqrt(diag(solve(hessian)))
 
     rsf.coefs <- out$par[1:k.rsf]
@@ -92,35 +86,28 @@ if(is.null(p))
     class( ans ) <- "rsf"
 
     return(ans)
-
-
 }
 
   ##IF we have a probability of detection model
 if(!is.null(p)){
-
-
     p.mod.mat   <- getModMatrix(p, ncells)
-
 
     X.p   <- p.mod.mat$X
     k.p   <- p.mod.mat$n.covars  # includes intercept if present
 
-    strt.vals <- rep(0, k.rsf+k.p)
+    strt.vals <- rep(0, k.rsf + k.p)
 
     #   Do maximization
-    out <- nlminb(start = strt.vals, objective = likelihoodMDC,
-                  X1=X.rsf, X2=X.p,
-                  locations=locations, k1=k.rsf, k2=k.p,
+    out <- nlminb(start = strt.vals, objective = pdrsfLogLike,
+                  X1 = X.rsf, X2 = X.p,
+                  locations = locations, k1 = k.rsf, k2 = k.p,
                   maxLagArg = maxLagArg)
 
-
     # Function call
-    hessian = F.2nd.deriv(out$par, likelihoodMDC, X1=X.rsf, X2=X.p,
-                          locations=locations, k1=k.rsf, k2=k.p,
+    hessian = F.2nd.deriv(out$par, pdrsfLogLike, X1 = X.rsf, X2 = X.p,
+                          locations = locations, k1 = k.rsf, k2 = k.p,
                           maxLagArg = maxLagArg)
     SEs = sqrt(diag(solve(hessian)))
-
 
     rsf.coefs <- out$par[1:k.rsf]
     p.coefs <- out$par[(k.rsf+1):(k.rsf+k.p)]
@@ -131,7 +118,7 @@ if(!is.null(p)){
 
     LogDataframe <- data.frame("Covar" = LogCovar,
                                "Coef" =  p.coefs,
-                               "SE" = SEs[(k.rsf+1):(k.rsf+k.p)])
+                               "SE" = SEs[(k.rsf + 1):(k.rsf + k.p)])
 
     ans <- list(    loglik = -out$objective,
                     convergence = out$convergence,
@@ -140,8 +127,8 @@ if(!is.null(p)){
                     n.fix.attempts = length(locations),
                     RSF = RSFDataframe,
                     ProbOfDet = LogDataframe,
-                    aic = 2*out$objective  + 2*(k.rsf+k.p),
-                    bic = 2*out$objective + (k.rsf+k.p)*log(sum(!is.na(locations))-1))
+                    aic = 2*out$objective  + 2*(k.rsf + k.p),
+                    bic = 2*out$objective + (k.rsf + k.p)*log(sum(!is.na(locations))-1))
     class( ans ) <- "rsf"
 
     return(ans)
