@@ -37,12 +37,12 @@ getModMatrix <- function(f, ncells){
   intercept <- NA
   if(nchar(form) == 1 & form == "1"){
     # this is a model with intercept only
-    X <- matrix(1,ncells,1)
+    X <- matrix(1, ncells, 1)
     intercept <- TRUE
     nx <- 1
     x.names <- character(0)
   } else {  #This else is if for more than just an intercept only model
-    if(substr(form, start=1, stop=1) == "1"){
+    if(substr(form, start = 1, stop = 1) == "1"){
       int <- 1
       intercept <- TRUE
     } else {
@@ -58,7 +58,7 @@ getModMatrix <- function(f, ncells){
     # ##### #Addin factor
     #
     # #Look for where there are factors in MT
-    # factorsToFind <- as.data.frame(attr(mt,"dataClasses"))
+    # factorsToFind <- as.data.frame(attr(mt, "dataClasses"))
     # colnames(factorsToFind) <- c("Type")
     #
     # factorsToFind$DataName <- row.names(factorsToFind)
@@ -70,7 +70,7 @@ getModMatrix <- function(f, ncells){
     #
     # #Now Mke a list or make it null
     #
-    # if(identical(contrastsToAdd,character(0)))
+    # if(identical(contrastsToAdd, character(0)))
     # {
     #   contrasts <- NULL
     # } else {
@@ -110,8 +110,8 @@ getModMatrix <- function(f, ncells){
     dimnames(X) <- NULL
   }
   ans <- list(
-    X=X,
-    n.covars=nx,
+    X = X,
+    n.covars = nx,
     intercept = intercept,
     vars = x.names)
   return(ans)
